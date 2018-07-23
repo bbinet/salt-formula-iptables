@@ -1,5 +1,5 @@
 {% from "iptables/map.jinja" import service with context %}
-{%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
+{%- if service.get('force_rules') or grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
 {%- if 'iptables-restore' in service.providers and service.get('provider') == "iptables-restore" %}
 
