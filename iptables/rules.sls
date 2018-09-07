@@ -16,7 +16,7 @@
 {%- endif %}
 {%- endif %}
 {%- endfor %}
-/etc/iptables/rules.v4.tmp:
+/etc/iptables/rules.v4:
   file.managed:
     - source: salt://iptables/files/rules.v4
     - template: jinja
@@ -27,6 +27,9 @@
     - require:
       - pkg: iptables_packages
       - file: /usr/share/netfilter-persistent/plugins.d/15-ip4tables
+{%- if not grains.get('noservices') %}
+    - name: /etc/iptables/rules.v4.tmp
+
 iptables-restore --test /etc/iptables/rules.v4.tmp:
   cmd.run:
     - onchanges:
@@ -41,9 +44,10 @@ cp -a /etc/iptables/rules.v4 /etc/iptables/rules.v4.tmp:
   cmd.run:
     - onfail:
       - cmd: "iptables-restore --test /etc/iptables/rules.v4.tmp"
+{%- endif %}
 
 {%- if grains.ipv6|default(False) and service.ipv6|default(True) %}
-/etc/iptables/rules.v6.tmp:
+/etc/iptables/rules.v6:
   file.managed:
     - source: salt://iptables/files/rules.v6
     - template: jinja
@@ -56,6 +60,9 @@ cp -a /etc/iptables/rules.v4 /etc/iptables/rules.v4.tmp:
       - file: /usr/share/netfilter-persistent/plugins.d/25-ip6tables
     - watch_in:
       - service: iptables_services
+{%- if not grains.get('noservices') %}
+    - name: /etc/iptables/rules.v6.tmp
+
 ip6tables-restore --test /etc/iptables/rules.v6.tmp:
   cmd.run:
     - onchanges:
@@ -70,6 +77,7 @@ cp -a /etc/iptables/rules.v6 /etc/iptables/rules.v6.tmp:
   cmd.run:
     - onfail:
       - cmd: "ip6tables-restore --test /etc/iptables/rules.v6.tmp"
+{%- endif %}
 {%- endif %}
 {%- else %}
 

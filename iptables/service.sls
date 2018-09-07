@@ -37,6 +37,9 @@ iptables_packages:
 iptables_services:
 {%- if grains.init == 'systemd' %}
   service.running:
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
 {%- else %}
   service.dead:
 {%- endif %}
