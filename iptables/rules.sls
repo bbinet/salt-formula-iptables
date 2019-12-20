@@ -81,7 +81,7 @@ cp -a /etc/iptables/rules.v6 /etc/iptables/rules.v6.tmp:
 {%- endif %}
 {%- else %}
 
-{%- for chain_name, chain in service.get('chain', {}).iteritems() %}
+{%- for chain_name, chain in service.get('chain', {}).items() %}
 
 iptables_{{ chain_name }}:
   iptables.chain_present:

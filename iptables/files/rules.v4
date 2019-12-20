@@ -2,11 +2,11 @@
 {%- for table in ['mangle', 'nat', 'filter'] %}
 
 *{{ table }}
-{%- for chain_name, chain in chains.iteritems() %}
+{%- for chain_name, chain in chains.items() %}
 :{{ chain_name | upper }} {{ chain.get('policy', '-') | upper }}
 {%- endfor %}
 
-{%- for chain_name, chain in chains.iteritems() %}
+{%- for chain_name, chain in chains.items() %}
 {%- for rule in chain.rules %}
 {%- if rule.get('table', 'filter').lower() == table and rule.get('family', 'ipv4') == 'ipv4' %}
 {%- set r = {
