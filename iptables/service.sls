@@ -9,6 +9,25 @@ iptables_packages:
   pkg.installed:
   - names: {{ service.pkgs }}
 
+{%- if service.get('backend') == 'legacy' %}
+iptables:
+  alternatives.set:
+    - path: /usr/sbin/iptables-legacy
+ip6tables:
+  alternatives.set:
+    - path: /usr/sbin/ip6tables-legacy
+{%- elif service.get('backend') == 'nft' %}
+iptables:
+  alternatives.set:
+    - path: /usr/sbin/iptables-nft
+ip6tables:
+  alternatives.set:
+    - path: /usr/sbin/ip6tables-nft
+{%- else %}
+iptables: alternatives.auto
+ip6tables: alternatives.auto
+{%- endif %}
+
 {%- if 'iptables-restore' in service.providers %}
 /usr/share/netfilter-persistent/plugins.d/15-ip4tables:
   file.managed:
